@@ -54,6 +54,8 @@ public class RoomScheduler {
 		System.out.println("  3 - Schedule a room");
 		System.out.println("  4 - List Schedule");
 		System.out.println("  5 - List Rooms");
+		System.out.println("  6 - Import Room Data from JSON file");
+		System.out.println("  7 - Export Room Data to JSON file");
 		System.out.println("Enter your selection: ");
 
 		return keyboard.nextInt();
