@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// Used for conversion to and from json
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,6 +27,7 @@ public class RoomScheduler {
 	 * Main method for execution
 	 * <p>
 	 * Displays main menu in loop until boolean end is set
+	 * @param args no arguments accepted at this time
 	 */
 	public static void main(String[] args) {
 		Boolean end = false;

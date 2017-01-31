@@ -19,7 +19,6 @@ public class Room {
 	 * Creates Room object with specified name and capacity
 	 * @param newName the name to be assigned to this room
 	 * @param newCapacity the capacity assigned to this room
-	 * @return Newly created Room object
 	 */
 	public Room(String newName, int newCapacity) {
 		setName(newName);
@@ -46,7 +45,7 @@ public class Room {
 
 	/**
 	 * Returns the name of this Room 
-	 * @return the name of this Room
+	 * @return the name of this Room as a String
 	 */
 	public String getName() {
 		return name;

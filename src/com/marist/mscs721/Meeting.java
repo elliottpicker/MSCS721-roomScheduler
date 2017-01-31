@@ -21,7 +21,6 @@ public class Meeting {
 	 * @param newStartTime beginning time of this meeting
 	 * @param newEndTime ending time of this meeting
 	 * @param newSubject subject of this meeting
-	 * @return Newly created Meeting object
 	 */
 	public Meeting(Timestamp newStartTime, Timestamp newEndTime, String newSubject) {
 		setStartTime(newStartTime);
