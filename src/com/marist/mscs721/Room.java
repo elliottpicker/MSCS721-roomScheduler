@@ -2,13 +2,25 @@ package com.marist.mscs721;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a room and contains the list of meetings scheduled to this room
+ * @author      Elliott Picker
+ * @version     1.1                       
+ *  */
+
 public class Room {	
 	
 	private String name;
 	private int capacity;
-	private ArrayList<Meeting> meetings;
+	private ArrayList<Meeting> meetings; 
 	
 	
+	/**
+	 * Creates Room object with specified name and capacity
+	 * @param newName the name to be assigned to this room
+	 * @param newCapacity the capacity assigned to this room
+	 * @return Newly created Room object
+	 */
 	public Room(String newName, int newCapacity) {
 		setName(newName);
 		setCapacity(newCapacity);

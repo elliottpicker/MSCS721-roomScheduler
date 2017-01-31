@@ -12,8 +12,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 
+/**
+ * Used to launch the main menu to process room schedules.
+ * @author      Elliott Picker
+ * @version     1.1                       
+ *  */
 
 public class RoomScheduler {
+
 	protected static String filename="roomscheduler.json";
 	protected static Scanner keyboard = new Scanner(System.in);
 	/**
@@ -266,6 +272,7 @@ public class RoomScheduler {
 			}
 			catch(Exception e)
 			{
+				//either startDate or startTime is not suitable for Timestamp
 				System.out.println("Unable to read start date or time");
 				System.out.println("Start Date? (yyyy-mm-dd):");
 				startDate = keyboard.next();
@@ -289,6 +296,7 @@ public class RoomScheduler {
 			}
 			catch(Exception e)
 			{
+				//either endDate or endTime is not suitable for Timestamp
 				System.out.println("Unable to read start date or time.");
 				System.out.println("End Date? (yyyy-mm-dd):");
 				endDate = keyboard.next();
