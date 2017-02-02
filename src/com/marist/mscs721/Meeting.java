@@ -10,7 +10,6 @@ import java.sql.Timestamp;
  *  */
 
 public class Meeting {
-	
 	private Timestamp startTime = null;
 	private Timestamp stopTime = null;
 	private String subject = null;
@@ -26,7 +25,7 @@ public class Meeting {
 		setStartTime(newStartTime);
 		setStopTime(newEndTime);
 		if (newSubject.isEmpty()) {
-			setSubject("N/A");
+			setSubject("No Subject");
 		}
 		else {
 			setSubject(newSubject);
@@ -38,7 +37,8 @@ public class Meeting {
 	 * @return String consisting of this meetings start - end: subject
 	 */
 	public String toString() {
-		return this.getStartTime().toString() + " - " + this.getStopTime() + ": " + getSubject();
+	//	return this.getStartTime().toString() + " - " + this.getStopTime() + ": " + getSubject();
+		return new StringBuilder(getStartTime().toString()).append('-').append(getStopTime().toString()).append(": ").append(getSubject()).toString();
 	}
 	
 	/**

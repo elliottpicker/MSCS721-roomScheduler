@@ -21,8 +21,9 @@ import com.google.gson.reflect.TypeToken;
 
 public class RoomScheduler {
 
-	protected static String filename="roomscheduler.json";
-	protected static Scanner keyboard = new Scanner(System.in);
+	final protected static Scanner keyboard = new Scanner(System.in);
+	final protected static String filename="roomscheduler.json";
+	
 	/**
 	 * Main method for execution
 	 * <p>
@@ -31,7 +32,7 @@ public class RoomScheduler {
 	 */
 	public static void main(String[] args) {
 		Boolean end = false;
-		ArrayList<Room> rooms = new ArrayList<Room>();
+		ArrayList<Room> rooms = new ArrayList<>();
 
 		while (!end) {
 			switch (mainMenu()) {
@@ -81,7 +82,7 @@ public class RoomScheduler {
 	protected static void listSchedule(ArrayList<Room> roomList) {
 		String roomName = getRoomName();
 		if(doesRoomExist(roomList,roomName))
-		{
+		{ 
 			System.out.println(roomName + " Schedule");
 			System.out.println("---------------------");
 		
@@ -188,14 +189,15 @@ public class RoomScheduler {
 	 * @return      String indicating number of rooms
 	 */
 	protected static String listRooms(ArrayList<Room> roomList) {
+		String dashesPrint="---------------------"; // to save on String building
 		System.out.println("Room Name - Capacity");
-		System.out.println("---------------------");
+		System.out.println(dashesPrint);
 
 		for (Room room : roomList) {
 			System.out.println(room.getName() + " - " + room.getCapacity());
 		}
 
-		System.out.println("---------------------");
+		System.out.println(dashesPrint);
 
 		return roomList.size() + " Room(s)";
 	}
@@ -210,10 +212,11 @@ public class RoomScheduler {
 	 */
 	protected static ArrayList<Room> importRoomData( ArrayList<Room> roomListOld) {
 		try{
-		 BufferedReader br = new BufferedReader(new FileReader(filename));
+		 FileReader fr = new FileReader(filename);
+		 BufferedReader br = new BufferedReader(fr);
 		 Type listType = new TypeToken<ArrayList<Room>>() {}.getType();
 		 ArrayList<Room> roomList = new Gson().fromJson(br,listType); 
-		
+		 fr.close();
 		 br.close();
 		 System.out.println("imported "+filename);
 		 return roomList;
@@ -280,12 +283,13 @@ public class RoomScheduler {
 				startDate = keyboard.next();
 				System.out.println("Start Time?");
 				startTime = keyboard.next();
-				startTime = startTime + ":00.0";
+				//use StringBuilder
+				startTime = new StringBuilder(startTime).append(":00.0").toString();
 				 
 			}
 		}
 
-		Timestamp endTimestamp=null;;
+		Timestamp endTimestamp=null;
 		System.out.println("End Date? (yyyy-mm-dd):");
 		String endDate = keyboard.next();
 		System.out.println("End Time?");
@@ -304,7 +308,8 @@ public class RoomScheduler {
 				endDate = keyboard.next();
 				System.out.println("End Time?");
 				endTime = keyboard.next();
-				endTime = endTime + ":00.0";
+				//Use String builder 
+				endTime = new StringBuilder(endTime).append(":00.0").toString();
 			}
 		}
 		if(startTimestamp.after(endTimestamp))
@@ -317,7 +322,6 @@ public class RoomScheduler {
 			keyboard.nextLine();
 			String subject = keyboard.nextLine();
 			Room curRoom = getRoomFromName(roomList, name);
-
 			Meeting meeting = new Meeting(startTimestamp, endTimestamp, subject);
 			return curRoom.addMeeting(meeting);
 		}
