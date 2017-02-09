@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 // Used for conversion to and from json
 import com.google.gson.Gson;
@@ -21,8 +22,16 @@ import com.google.gson.reflect.TypeToken;
 
 public class RoomScheduler {
 
-	final protected static Scanner keyboard = new Scanner(System.in);
-	final protected static String filename="roomscheduler.json";
+	
+	protected static final Scanner keyboard = new Scanner(System.in);
+	protected static final String FILENAME="roomscheduler.json";
+	private static final Logger logger = Logger.getLogger( RoomScheduler.class.getName() );
+	
+	private RoomScheduler() {
+	    throw new IllegalAccessError("Error RoomScheduler");
+	  }
+	
+	
 	
 	/**
 	 * Main method for execution
@@ -81,12 +90,13 @@ public class RoomScheduler {
 	 */
 	protected static void listSchedule(ArrayList<Room> roomList) {
 		String roomName = getRoomName();
-		if(doesRoomExist(roomList,roomName))
+		Room room=getRoomFromName(roomList, roomName);
+		if(room!=null)
 		{ 
 			System.out.println(roomName + " Schedule");
 			System.out.println("---------------------");
 		
-			for (Meeting m : getRoomFromName(roomList, roomName).getMeetings()) {
+			for (Meeting m : room.getMeetings() ) {
 				System.out.println(m.toString());
 			}
 		}
@@ -144,6 +154,7 @@ public class RoomScheduler {
 			{
 				System.out.println("Invalid Capacity, enter a valid integer");
 				capacity=-1;
+				logger.info("invalid room capacity enterred"+e);
 				keyboard.next();
 			}
 
@@ -211,21 +222,20 @@ public class RoomScheduler {
 	 * @return      either the roomList read in from file or the roomList passed in if file could not be opened
 	 */
 	protected static ArrayList<Room> importRoomData( ArrayList<Room> roomListOld) {
-		try{
-		 FileReader fr = new FileReader(filename);
-		 BufferedReader br = new BufferedReader(fr);
+		try(BufferedReader br = new BufferedReader(new FileReader(FILENAME)))
+		{
 		 Type listType = new TypeToken<ArrayList<Room>>() {}.getType();
 		 ArrayList<Room> roomList = new Gson().fromJson(br,listType); 
-		 fr.close();
-		 br.close();
-		 System.out.println("imported "+filename);
+		 System.out.println("imported "+FILENAME);
 		 return roomList;
 		}
 		catch(Exception e)
 		{
 			System.out.println("An unknown error has occurred, unable to import json data");
+			logger.warning("Unable to import json "+e);
 			return roomListOld;
 		}
+		
 	}
 	
 	/**
@@ -235,20 +245,20 @@ public class RoomScheduler {
 	 * @return      Message indicating whether the room was exported successfully or not
 	 */
 	protected static String exportRoomData(ArrayList<Room> roomList) {
-		try
+		try(PrintWriter out = new PrintWriter(FILENAME))
 		{
 			
-			PrintWriter out = new PrintWriter(filename);
+			
 			String json = new Gson().toJson(roomList);
 			out.println(json);
-			out.close();
-			return "Json data saved to "+filename+". ";
+			return "Json data saved to "+FILENAME+". ";
 		}
 		catch (Exception e)
 		{
-		return "An unknown error has occurred, unable to export json data";	
-		}
 		
+			logger.warning("Unable to export json "+e);
+			return "An unknown error has occurred, unable to export json data";	
+		}
 	}
 	
 	/**
@@ -285,6 +295,7 @@ public class RoomScheduler {
 				startTime = keyboard.next();
 				//use StringBuilder
 				startTime = new StringBuilder(startTime).append(":00.0").toString();
+				logger.info("invalid start date enterred "+e);
 				 
 			}
 		}
@@ -310,6 +321,7 @@ public class RoomScheduler {
 				endTime = keyboard.next();
 				//Use String builder 
 				endTime = new StringBuilder(endTime).append(":00.0").toString();
+				logger.info("invalid end date enterred "+e);
 			}
 		}
 		if(startTimestamp.after(endTimestamp))
@@ -322,8 +334,15 @@ public class RoomScheduler {
 			keyboard.nextLine();
 			String subject = keyboard.nextLine();
 			Room curRoom = getRoomFromName(roomList, name);
-			Meeting meeting = new Meeting(startTimestamp, endTimestamp, subject);
-			return curRoom.addMeeting(meeting);
+			if(curRoom!=null)
+			{
+				Meeting meeting = new Meeting(startTimestamp, endTimestamp, subject);
+				return curRoom.addMeeting(meeting);
+			}
+			else
+			{	// this should never happen because we already tested if bane exists in roomList
+				return "Unknown error locating room "+name;
+			}
 		}
 
 		

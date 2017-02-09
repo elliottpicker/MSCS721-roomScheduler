@@ -36,8 +36,8 @@ public class Meeting {
 	 * Returns this meetings start,end, and subject
 	 * @return String consisting of this meetings start - end: subject
 	 */
+	@Override
 	public String toString() {
-	//	return this.getStartTime().toString() + " - " + this.getStopTime() + ": " + getSubject();
 		return new StringBuilder(getStartTime().toString()).append('-').append(getStopTime().toString()).append(": ").append(getSubject()).toString();
 	}
 	

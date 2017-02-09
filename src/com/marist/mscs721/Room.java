@@ -1,6 +1,8 @@
 package com.marist.mscs721;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Represents a room and contains the list of meetings scheduled to this room
@@ -83,7 +85,7 @@ public class Room {
 	 * Returns all meetings scheduled for this room
 	 * @return an Arraylist of Meetings scheduled for this room
 	 */
-	public ArrayList<Meeting> getMeetings() {
+	public List<Meeting> getMeetings() {
 		return meetings;
 	}
 
@@ -92,8 +94,8 @@ public class Room {
 	 * Assings a new set of meetings scheduled for this room
 	 * @param meetings an arraylist of meetings to replace the current schedule
 	 */
-	public void setMeetings(ArrayList<Meeting> meetings) {
-		this.meetings = meetings;
+	public void setMeetings(List<Meeting> meetings) {
+		this.meetings = new ArrayList(meetings);
 	}
 	
 	/**
