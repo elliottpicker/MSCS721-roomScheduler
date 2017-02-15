@@ -83,7 +83,7 @@ public class Room {
 
 	/**
 	 * Returns all meetings scheduled for this room
-	 * @return an Arraylist of Meetings scheduled for this room
+	 * @return a list of Meetings scheduled for this room
 	 */
 	public List<Meeting> getMeetings() {
 		return meetings;
@@ -92,10 +92,10 @@ public class Room {
 
 	/**
 	 * Assings a new set of meetings scheduled for this room
-	 * @param meetings an arraylist of meetings to replace the current schedule
+	 * @param meetings a list of meetings to replace the current schedule
 	 */
 	public void setMeetings(List<Meeting> meetings) {
-		this.meetings = new ArrayList(meetings);
+		this.meetings = new ArrayList<>(meetings);
 	}
 	
 	/**
