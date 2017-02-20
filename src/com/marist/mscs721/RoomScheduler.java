@@ -2,10 +2,14 @@ package com.marist.mscs721;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -150,7 +154,7 @@ public class RoomScheduler {
 			try{
 				capacity = keyboard.nextInt();
 				}
-			catch(Exception e)
+			catch(NoSuchElementException e)
 			{
 				System.out.println("Invalid Capacity, enter a valid integer");
 				capacity=-1;
@@ -219,7 +223,7 @@ public class RoomScheduler {
 	 * Opens roomscheduler.json and converts to arraylist of rooms
 	 *
 	 * @param  roomListOld the list of rooms to return if roomscheudler.json cannot be opened
-	 * @return      either the roomList read in from file or the roomList passed in if file could not be opened
+	 * @return      Thhe list of rooms passed with the addition of the room list read from the json file
 	 */
 	protected static ArrayList<Room> importRoomData( ArrayList<Room> roomListOld) {
 		try(BufferedReader br = new BufferedReader(new FileReader(FILENAME)))
@@ -227,9 +231,12 @@ public class RoomScheduler {
 		 Type listType = new TypeToken<ArrayList<Room>>() {}.getType();
 		 ArrayList<Room> roomList = new Gson().fromJson(br,listType); 
 		 System.out.println("imported "+FILENAME);
+		 System.out.println(roomList.size()+" rooms found");
+		 roomList.addAll(roomListOld);
+		 System.out.println(roomList.size()+" rooms total"); 
 		 return roomList;
 		}
-		catch(Exception e)
+		catch(IOException e)
 		{
 			System.out.println("An unknown error has occurred, unable to import json data");
 			logger.warning("Unable to import json "+e);
@@ -251,9 +258,9 @@ public class RoomScheduler {
 			
 			String json = new Gson().toJson(roomList);
 			out.println(json);
-			return "Json data saved to "+FILENAME+". ";
+			return "Json data saved to "+FILENAME+". \n"+roomList.size()+" rooms written";
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
 		
 			logger.warning("Unable to export json "+e);
@@ -285,7 +292,7 @@ public class RoomScheduler {
 			try{
 				startTimestamp= Timestamp.valueOf(startDate + " " + startTime);
 			}
-			catch(Exception e)
+			catch(IllegalArgumentException e)
 			{
 				//either startDate or startTime is not suitable for Timestamp
 				System.out.println("Unable to read start date or time");
@@ -311,7 +318,7 @@ public class RoomScheduler {
 			try{
 			endTimestamp = Timestamp.valueOf(endDate + " " + endTime);
 			}
-			catch(Exception e)
+			catch(IllegalArgumentException e)
 			{
 				//either endDate or endTime is not suitable for Timestamp
 				System.out.println("Unable to read start date or time.");
