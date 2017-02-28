@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC " " >
+
+
+
+<module name="com">
+    <module name="marist"/>
+    <module name="mscs721">
+        <module name="Meeting"/>
+        <module name="Room"/>
+        <module name="RoomScheduler"/>
+    </module>
+</module>

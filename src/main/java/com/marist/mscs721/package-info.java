@@ -2,4 +2,4 @@
  * @author elliott.picker1@marist.edu
  *
  */
-package com.marist.mscs721;
+package main.java.com.marist.mscs721;

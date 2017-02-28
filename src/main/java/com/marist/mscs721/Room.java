@@ -1,4 +1,4 @@
-package com.marist.mscs721;
+package main.java.com.marist.mscs721;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +106,7 @@ public class Room {
 	public boolean collides(Meeting request)
 	{
 		for (Meeting m : meetings) {
+			
 			if (request.collidesWith(m))
 				return true;
 		}
