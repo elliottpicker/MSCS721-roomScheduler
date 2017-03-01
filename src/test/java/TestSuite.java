@@ -8,6 +8,10 @@ import org.junit.runners.Suite;
    JUnitMeeting.class,
    JUnitRoom.class
 })
-
+/**
+ * A test suite designed to call various test cases (one per class)
+ * @author elliott picker
+ *
+ */
 public class TestSuite {   
 }  

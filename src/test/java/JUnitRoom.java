@@ -11,10 +11,19 @@ import org.junit.Test;
 import main.java.com.marist.mscs721.Meeting;
 import main.java.com.marist.mscs721.Room;
 
+/**
+ * 
+ * @author elliott picker
+ * Runs a variety of tests against the Room class of RoomScheduler
+ *
+ */
 public class JUnitRoom {
 	
 	
-
+/**
+ * This method tests the addMeeting function to ensure it the passed meeting is the same
+ * as that returned by the getMeetings function
+ */
 	@Test
 	public void testAddMeeting() {
 		Room room = new Room("room1",20);
@@ -26,6 +35,9 @@ public class JUnitRoom {
 		assertEquals(meeting,meeting2);
 	}
 
+	/**
+	 * This method tests that the getName method returns the name passed to the meeting constructor
+	 */
 	@Test
 	public void testGetName() {
 		String roomName="room2";
@@ -34,6 +46,9 @@ public class JUnitRoom {
 		
 	}
 
+	/**
+	 * This method ensures that the setName method changes the room name
+	 */
 	@Test
 	public void testSetName() {
 		String roomName="room3";
@@ -43,6 +58,9 @@ public class JUnitRoom {
 		assertEquals(changedRoomName,room.getName());
 	}
 
+	/**
+	 * This method tests that the getCapacity method returns the capacity passed to the constructor
+	 */
 	@Test
 	public void testGetCapacity() {
 		String roomName="room4";
@@ -51,6 +69,9 @@ public class JUnitRoom {
 		assertEquals(capacity,room.getCapacity());
 	}
 
+	/**
+	 * This method ensures that the setCapacity method changes the rooms capacity
+	 */
 	@Test
 	public void testSetCapacity() {
 		String roomName="room4";
@@ -62,6 +83,11 @@ public class JUnitRoom {
 		
 	}
 
+	
+	/**
+	 * this method adds 3 meetings to a room an ensures that the getMeetings
+	 * method returns the arraylist containing these 3 meetings
+	 */
 	@Test
 	public void testGetMeetings() {
 		ArrayList<Meeting> meetings = new ArrayList<Meeting>();
@@ -85,6 +111,11 @@ public class JUnitRoom {
 
 	}
 
+	/**
+	 * This method builds an arraylist of meetings and uses the setMeetings method
+	 * to assign this list of meetings and verifies that it matches that returned
+	 * by the getMeetings method
+	 */
 	@Test
 	public void testSetMeetings() {
 		ArrayList<Meeting> meetings = new ArrayList<Meeting>();
@@ -104,6 +135,10 @@ public class JUnitRoom {
 		assertEquals(meetings,room.getMeetings());
 	}
 
+	/** 
+	 * This method builds a room with 2 meetings and checks if a third meeting designed to collide
+	 * returns true, verifying the testCollides method
+	 */
 	@Test
 	public void testCollides() {
 		Room room = new Room("room1",20);
