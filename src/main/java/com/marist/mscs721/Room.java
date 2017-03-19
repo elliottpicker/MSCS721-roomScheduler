@@ -37,11 +37,11 @@ public class Room {
 		if(!collides(newMeeting))
 		{
 		this.getMeetings().add(newMeeting);
-		return "Sucessfully Scheduled Meeting!"; 
+		return "Sucessfully Scheduled Meeting for room: "+name; 
 		}
 		else
 		{
-		return "Unable to schedule due to a conflict!";
+		return "Unable to schedule room: "+name+" due to a conflict!";
 		}
 	}
 

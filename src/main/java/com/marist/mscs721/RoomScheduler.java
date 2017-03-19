@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 // Used for conversion to and from json
 import com.google.gson.Gson;
@@ -28,7 +28,8 @@ public class RoomScheduler {
 	
 	protected static final Scanner keyboard = new Scanner(System.in);
 	protected static final String FILENAME="roomscheduler.json";
-	private static final Logger logger = Logger.getLogger( RoomScheduler.class.getName() );
+	//private static final Logger logger = Logger.getLogger( RoomScheduler.class.getName() );
+	static Logger logger = Logger.getLogger(RoomScheduler.class.getName());
 	
 	private RoomScheduler() {
 	    throw new IllegalAccessError("Error RoomScheduler");
@@ -102,9 +103,15 @@ public class RoomScheduler {
 			for (Meeting m : room.getMeetings() ) {
 				System.out.println(m.toString());
 			}
+			logger.info("listschedule requested for: "+roomName);
 		}
 		else
+		{
 			System.out.println(roomName+" not found!");
+			logger.warn("Invalid request to listschedule for unknown room: "+roomName);
+		}
+		
+		
 
 	}
 
@@ -128,11 +135,13 @@ public class RoomScheduler {
 		if(keyboard.hasNextInt())
 		{
 		selection=keyboard.nextInt();
+		
 		}
 		else
 		{
 		selection=-1;
-		keyboard.next();
+		String input=keyboard.nextLine();
+		logger.warn("invalid menu selection made: "+input);
 		}
 		return selection;
 	}
@@ -155,9 +164,9 @@ public class RoomScheduler {
 				}
 			catch(NoSuchElementException e)
 			{
-				System.out.println("Invalid Capacity, enter a valid integer");
+				System.out.println("Invalid Capacity, enter a valid integer!");
 				capacity=-1;
-				logger.info("invalid room capacity enterred"+e);
+				logger.warn("invalid room capacity enterred for room: "+name+" "+e);
 				keyboard.next();
 			}
 
@@ -165,7 +174,7 @@ public class RoomScheduler {
 			
 		Room newRoom = new Room(name, capacity);
 		roomList.add(newRoom);
-
+		logger.info(newRoom.getName()+" room created");
 		return "Room '" + newRoom.getName() + "' added successfully!";
 	}
 
@@ -186,10 +195,13 @@ public class RoomScheduler {
 		{
 			int index=findRoomIndex(roomList,roomName);
 			roomList.remove(index);
+			logger.info(roomName+" room removed");
+			
 			return "Room removed successfully!";
 		}
 		else
 		{
+			logger.warn("Invalid request to remove unkown room: "+roomName);
 			return "Room could not be found, no rooms were deleted";
 		}
 
@@ -212,10 +224,9 @@ public class RoomScheduler {
 		}
 
 		System.out.println(dashesPrint);
-
+		logger.info(roomList.size() + " Room(s) listed");
 		return roomList.size() + " Room(s)";
 	}
-
 	/**
 	 * Reads in roomList from external json file  
 	 * <p>
@@ -229,16 +240,17 @@ public class RoomScheduler {
 		{
 		 Type listType = new TypeToken<ArrayList<Room>>() {}.getType();
 		 ArrayList<Room> roomList = new Gson().fromJson(br,listType); 
-		 System.out.println("imported "+FILENAME);
-		 System.out.println(roomList.size()+" rooms found");
+		 System.out.println("imported "+roomList.size()+" rooms from "+FILENAME);
+		 logger.info("imported "+roomList.size()+" rooms from "+FILENAME);
 		 roomList.addAll(roomListOld);
 		 System.out.println(roomList.size()+" rooms total"); 
+		 logger.info(roomList.size()+" rooms total");
 		 return roomList;
 		}
 		catch(IOException e)
 		{
 			System.out.println("An unknown error has occurred, unable to import json data");
-			logger.warning("Unable to import json "+e);
+			logger.warn("Unable to import json from"+FILENAME+" "+e);
 			return roomListOld;
 		}
 		
@@ -257,12 +269,14 @@ public class RoomScheduler {
 			
 			String json = new Gson().toJson(roomList);
 			out.println(json);
-			return "Json data saved to "+FILENAME+". \n"+roomList.size()+" rooms written";
+			String message="Json data saved to "+FILENAME+". \n"+roomList.size()+" rooms written";
+			logger.info(message);
+			return message ;
 		}
 		catch (IOException e)
 		{
 		
-			logger.warning("Unable to export json "+e);
+			logger.warn("Unable to export json "+e);
 			return "An unknown error has occurred, unable to export json data";	
 		}
 	}
@@ -278,7 +292,8 @@ public class RoomScheduler {
 		String name = getRoomName();	
 		if(!doesRoomExist(roomList,name))
 		{
-			return "Unable to schedule meeting, room not found";
+			logger.warn("Invalid schedule room request for "+name);
+			return "Unable to schedule meeting, room not found!";
 		}
 		System.out.println("Start Date? (yyyy-mm-dd):");
 		String startDate = keyboard.next();
@@ -294,6 +309,7 @@ public class RoomScheduler {
 			catch(IllegalArgumentException e)
 			{
 				//either startDate or startTime is not suitable for Timestamp
+				logger.info("invalid start date or time enterred for room "+name+" "+startDate+" "+startTime+" "+e);
 				System.out.println("Unable to read start date or time");
 				System.out.println("Start Date? (yyyy-mm-dd):");
 				startDate = keyboard.next();
@@ -301,7 +317,7 @@ public class RoomScheduler {
 				startTime = keyboard.next();
 				//use StringBuilder
 				startTime = new StringBuilder(startTime).append(":00.0").toString();
-				logger.info("invalid start date enterred "+e);
+				
 				 
 			}
 		}
@@ -320,6 +336,7 @@ public class RoomScheduler {
 			catch(IllegalArgumentException e)
 			{
 				//either endDate or endTime is not suitable for Timestamp
+				logger.info("invalid end date or time enterred for room "+name+" "+endDate+" "+endTime+" "+e);
 				System.out.println("Unable to read start date or time.");
 				System.out.println("End Date? (yyyy-mm-dd):");
 				endDate = keyboard.next();
@@ -327,26 +344,30 @@ public class RoomScheduler {
 				endTime = keyboard.next();
 				//Use String builder 
 				endTime = new StringBuilder(endTime).append(":00.0").toString();
-				logger.info("invalid end date enterred "+e);
+				
 			}
 		}
 		if(startTimestamp.after(endTimestamp))
 		{
-			return "Error detected, start time is after before time!";
+			String message="Error detected, end time is before start time for room "+name+"";
+			logger.warn(message);
+			return message ;
 		}
 		else
 		{
 			System.out.println("Subject?");
-			keyboard.nextLine();
-			String subject = keyboard.nextLine();
+			String subject = keyboard.next();
 			Room curRoom = getRoomFromName(roomList, name);
 			if(curRoom!=null)
 			{
 				Meeting meeting = new Meeting(startTimestamp, endTimestamp, subject);
-				return curRoom.addMeeting(meeting);
+				String message= curRoom.addMeeting(meeting);
+				logger.info(message);
+				return message;
 			}
 			else
-			{	// this should never happen because we already tested if bane exists in roomList
+			{	// this should never happen because we already tested if bane exists in roomList 
+				logger.error("attempting to schedule unkown room");
 				return "Unknown error locating room "+name;
 			}
 		}
@@ -398,7 +419,8 @@ public class RoomScheduler {
 	 */
 	protected static String getRoomName() {
 		System.out.println("Room Name?");
-		return keyboard.next();
+		String name=keyboard.next()+keyboard.nextLine();
+		return name;
 	}
 
 	/**
