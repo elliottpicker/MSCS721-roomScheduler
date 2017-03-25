@@ -155,8 +155,13 @@ public class RoomScheduler {
 	protected static String addRoom(ArrayList<Room> roomList) {
 		System.out.println("Add a room:");
 		String name = getRoomName();
+		if(doesRoomExist(roomList,name))
+		{
+			logger.warn("attempt to add duplicate room name: "+name);
+			return "room "+name+" already exists!";
+		}
 		int capacity=-1;
-		while(capacity==-1)
+		while(capacity<0)
 		{	
 			System.out.println("Room capacity?");
 			try{
@@ -164,10 +169,13 @@ public class RoomScheduler {
 				}
 			catch(NoSuchElementException e)
 			{
-				System.out.println("Invalid Capacity, enter a valid integer!");
 				capacity=-1;
 				logger.warn("invalid room capacity enterred for room: "+name+" "+e);
 				keyboard.next();
+			}
+			if(capacity<1)
+			{
+				System.out.println("Invalid Capacity, enter a valid whole number!");
 			}
 
 		}
@@ -247,7 +255,7 @@ public class RoomScheduler {
 		 logger.info(roomList.size()+" rooms total");
 		 return roomList;
 		}
-		catch(IOException e)
+		catch(Exception e)
 		{
 			System.out.println("An unknown error has occurred, unable to import json data");
 			logger.warn("Unable to import json from"+FILENAME+" "+e);
@@ -301,6 +309,8 @@ public class RoomScheduler {
 		String startTime = keyboard.next();
 		startTime = startTime + ":00.0";
 		Timestamp startTimestamp=null;
+		Timestamp today = new Timestamp(System.currentTimeMillis());
+		Timestamp inTenYears =  Timestamp.valueOf(today.toLocalDateTime().plusYears(10));
 		while(startTimestamp==null)
 		{
 			try{
@@ -320,6 +330,15 @@ public class RoomScheduler {
 				
 				 
 			}
+			
+		}
+		if(startTimestamp.after(inTenYears))
+		{
+			return "error start date is more than 10 years in the future";
+		}
+		if(startTimestamp.before(today))
+		{
+			return "error start date is before today";
 		}
 
 		Timestamp endTimestamp=null;
@@ -347,14 +366,31 @@ public class RoomScheduler {
 				
 			}
 		}
+		if(endTimestamp.after(inTenYears))
+		{
+			return "error end date is more than 10 years in the future";
+		}
+		if(endTimestamp.before(today))
+		{
+			return "error end date is before today";
+		}
+		
 		if(startTimestamp.after(endTimestamp))
 		{
 			String message="Error detected, end time is before start time for room "+name+"";
 			logger.warn(message);
 			return message ;
 		}
+		if(Timestamp.valueOf(startTimestamp.toLocalDateTime().plusMinutes(5)).after(endTimestamp))
+		{
+			String message="Meeting not scheduled, meeting must be at least 5 minutes in duration";
+			logger.warn(message);
+			return message ;
+	
+		}
 		else
 		{
+			
 			System.out.println("Subject?");
 			String subject = keyboard.next();
 			Room curRoom = getRoomFromName(roomList, name);
