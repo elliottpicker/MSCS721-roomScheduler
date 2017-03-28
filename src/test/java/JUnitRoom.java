@@ -20,6 +20,26 @@ import main.java.com.marist.mscs721.Room;
 public class JUnitRoom {
 	
 	
+	
+	
+/**
+ * This method tests the constructors passed to the room object
+ * to ensure they match the values passed
+ */
+	@Test
+	public void testRoom()
+	{
+		String roomName="roomname";
+		int capacity=6;
+		Room room = new Room(roomName,capacity);
+		boolean nameWorked=room.getName().equals(roomName);
+		boolean capacityWorked=room.getCapacity()==capacity;
+		assertTrue(nameWorked&&capacityWorked);
+		
+	}	
+	
+	
+	
 /**
  * This method tests the addMeeting function to ensure it the passed meeting is the same
  * as that returned by the getMeetings function
@@ -34,6 +54,25 @@ public class JUnitRoom {
 		Meeting meeting2 = room.getMeetings().get(0);
 		assertEquals(meeting,meeting2);
 	}
+	
+	/**
+	 * This method tests the addMeeting function to ensure that when passed a conflicting meeting
+	 * the output contains the string unable,  this will need to be changed if message text is changed
+	 */
+		@Test
+		public void testAddConflictingMeeting() {
+			Room room = new Room("room1",20);
+			Timestamp startTimestamp= Timestamp.valueOf("2017-04-06 04:00:00");
+			Timestamp endTimestamp= Timestamp.valueOf("2017-04-06 06:00:00");
+			Meeting meeting = new Meeting(startTimestamp,endTimestamp," meeting1");
+			room.addMeeting(meeting);
+			Timestamp startTimestamp2= Timestamp.valueOf("2017-04-06 05:00:00");
+			Timestamp endTimestamp2= Timestamp.valueOf("2017-04-06 05:30:00");
+			Meeting meeting2 = new Meeting(startTimestamp2,endTimestamp2," meeting2");
+			String output=room.addMeeting(meeting2);
+			System.out.println(output);
+			assertTrue(output.indexOf("Unable")!=-1);
+		}	
 
 	/**
 	 * This method tests that the getName method returns the name passed to the meeting constructor
@@ -134,6 +173,10 @@ public class JUnitRoom {
 		room.setMeetings(meetings);
 		assertEquals(meetings,room.getMeetings());
 	}
+	
+	
+	
+	
 
 	/** 
 	 * This method builds a room with 2 meetings and checks if a third meeting designed to collide
@@ -156,5 +199,7 @@ public class JUnitRoom {
 		boolean result=room.collides(meeting3);
 		assertTrue(result);
 	}
+	
+	
 
 }

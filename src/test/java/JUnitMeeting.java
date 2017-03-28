@@ -124,5 +124,24 @@ public class JUnitMeeting {
 		Meeting meeting2 = new Meeting(startTimestamp2,endTimestamp2,"meeting2");
 		assertTrue(meeting.collidesWith(meeting2));
 	}
+	
+	/**
+	 * This method tests that the meeting built by the constructor is consistent with
+	 * the variables passed to it
+	 */
+	@Test
+	public void testMeeting(){
+
+		String subject = "subject";
+		Timestamp startTimestamp= Timestamp.valueOf("2017-04-06 04:00:00");
+		Timestamp endTimestamp= Timestamp.valueOf("2017-04-06 05:00:00");
+		Meeting meeting = new Meeting(startTimestamp,endTimestamp,subject);
+		
+		boolean subjectWorks=meeting.getSubject().equals(subject);
+		boolean startTimeWorks=meeting.getStartTime().equals(startTimestamp);
+		boolean endTimeWorks=meeting.getStopTime().equals(endTimestamp);
+		
+		assertTrue(subjectWorks && startTimeWorks && endTimeWorks);
+	}
 
 }
