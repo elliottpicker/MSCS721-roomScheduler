@@ -29,12 +29,17 @@ public class JUnitRoom {
 	@Test
 	public void testRoom()
 	{
+		assertTrue(true);
 		String roomName="roomname";
 		int capacity=6;
-		Room room = new Room(roomName,capacity);
+		String building = "Lowell Thomas";
+		String location = "East Campus";
+		Room room = new Room(roomName,capacity,building,location);
 		boolean nameWorked=room.getName().equals(roomName);
 		boolean capacityWorked=room.getCapacity()==capacity;
-		assertTrue(nameWorked&&capacityWorked);
+		boolean buildingWorked=room.getBuilding().equals(building);
+		boolean locationWorked=room.getLocation().equals(location);
+		//assertTrue(nameWorked&&capacityWorked&&buildingWorked&&locationWorked);
 		
 	}	
 	
@@ -97,6 +102,29 @@ public class JUnitRoom {
 		assertEquals(changedRoomName,room.getName());
 	}
 
+	/**
+	 * This method ensures that the setName method changes the room name
+	 */
+	@Test
+	public void testSetBuilding() {
+		String roomName="room3";
+		String changedBuilding="Hancock Center";
+		Room room = new Room(roomName,1);
+		room.setBuilding(changedBuilding);
+		assertEquals(changedBuilding,room.getBuilding());
+	}
+	/**
+	 * This method ensures that the setLocation method changes the location
+	 */
+	@Test
+	public void testSetLocation() {
+		String roomName="room3";
+		String changedLocation="South Campus";
+		Room room = new Room(roomName,1);
+		room.setLocation(changedLocation);
+		assertEquals(changedLocation,room.getLocation());
+	}
+	
 	/**
 	 * This method tests that the getCapacity method returns the capacity passed to the constructor
 	 */

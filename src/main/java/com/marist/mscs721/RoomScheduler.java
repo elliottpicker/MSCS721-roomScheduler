@@ -10,7 +10,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import org.apache.log4j.Logger;
+
+
+import org.apache.log4j.*;
 
 // Used for conversion to and from json
 import com.google.gson.Gson;
@@ -29,7 +31,8 @@ public class RoomScheduler {
 	protected static final Scanner keyboard = new Scanner(System.in);
 	protected static final String FILENAME="roomscheduler.json";
 	//private static final Logger logger = Logger.getLogger( RoomScheduler.class.getName() );
-	static Logger logger = Logger.getLogger(RoomScheduler.class.getName());
+	static Logger logger = Logger.getLogger(RoomScheduler.class);
+
 	
 	private RoomScheduler() {
 	    throw new IllegalAccessError("Error RoomScheduler");
@@ -44,6 +47,7 @@ public class RoomScheduler {
 	 * @param args no arguments accepted at this time
 	 */
 	public static void main(String[] args) {
+		
 		Boolean end = false;
 		ArrayList<Room> rooms = new ArrayList<>();
 
@@ -155,12 +159,39 @@ public class RoomScheduler {
 	protected static String addRoom(ArrayList<Room> roomList) {
 		System.out.println("Add a room:");
 		String name = getRoomName();
-		if(doesRoomExist(roomList,name))
+		if(name.equalsIgnoreCase("#query"))
 		{
-			logger.warn("attempt to add duplicate room name: "+name);
-			return "room "+name+" already exists!";
+			logger.warn("attempt to create reserved room name "+name);
+			return "Sorry, this is a reserved keyword that cannot be used";
 		}
+
 		int capacity=-1;
+		String building="";
+		String location="";
+
+		System.out.println("Building?");
+		try{
+			building = keyboard.nextLine();
+			}
+		catch(NoSuchElementException e)
+		{
+			
+			logger.warn("invalid building enterred for room: "+name+" "+e);
+			keyboard.next();
+		}
+		
+		System.out.println("Location?");
+		try{
+			location = keyboard.nextLine();
+			}
+		catch(NoSuchElementException e)
+		{
+
+			logger.warn("invalid location enterred for room: "+name+" "+e);
+			keyboard.next();
+		}
+		
+		
 		while(capacity<0)
 		{	
 			System.out.println("Room capacity?");
@@ -177,10 +208,15 @@ public class RoomScheduler {
 			{
 				System.out.println("Invalid Capacity, enter a valid whole number!");
 			}
+			if(doesRoomExist(roomList,name))
+			{
+				logger.warn("attempt to add duplicate room name: "+name);
+				return "room "+name+" already exists!";
+			}
 
 		}
 			
-		Room newRoom = new Room(name, capacity);
+		Room newRoom = new Room(name, capacity,building,location);
 		roomList.add(newRoom);
 		logger.info(newRoom.getName()+" room created");
 		return "Room '" + newRoom.getName() + "' added successfully!";
@@ -210,7 +246,7 @@ public class RoomScheduler {
 		else
 		{
 			logger.warn("Invalid request to remove unkown room: "+roomName);
-			return "Room could not be found, no rooms were deleted";
+			return "Room "+roomName+" could not be found, no rooms were deleted";
 		}
 
 		
@@ -224,11 +260,11 @@ public class RoomScheduler {
 	 */
 	protected static String listRooms(ArrayList<Room> roomList) {
 		String dashesPrint="---------------------"; // to save on String building
-		System.out.println("Room Name - Capacity");
+		System.out.println("Room Name - Capacity - Building - Location");
 		System.out.println(dashesPrint);
 
 		for (Room room : roomList) {
-			System.out.println(room.getName() + " - " + room.getCapacity());
+			System.out.println(room);
 		}
 
 		System.out.println(dashesPrint);
@@ -297,8 +333,9 @@ public class RoomScheduler {
 	 */
 	protected static String scheduleRoom(ArrayList<Room> roomList) {
 		System.out.println("Schedule a room:");
+		System.out.println("(type #query to find available room)");
 		String name = getRoomName();	
-		if(!doesRoomExist(roomList,name))
+		if(!name.equalsIgnoreCase("#query") && !doesRoomExist(roomList,name))
 		{
 			logger.warn("Invalid schedule room request for "+name);
 			return "Unable to schedule meeting, room not found!";
@@ -338,7 +375,7 @@ public class RoomScheduler {
 		}
 		if(startTimestamp.before(today))
 		{
-			return "error start date is before today";
+			return "error start date is before the current time";
 		}
 
 		Timestamp endTimestamp=null;
@@ -393,6 +430,10 @@ public class RoomScheduler {
 			
 			System.out.println("Subject?");
 			String subject = keyboard.next();
+			if(name.equalsIgnoreCase("#query"))
+			{
+				name=findAvailableRoom(roomList,startTimestamp,endTimestamp);
+			}
 			Room curRoom = getRoomFromName(roomList, name);
 			if(curRoom!=null)
 			{
@@ -402,9 +443,9 @@ public class RoomScheduler {
 				return message;
 			}
 			else
-			{	// this should never happen because we already tested if bane exists in roomList 
-				logger.error("attempting to schedule unkown room");
-				return "Unknown error locating room "+name;
+			{	
+				logger.info("No rooms were scheduled");
+				return "No rooms were scheduled";
 			}
 		}
 
@@ -470,4 +511,48 @@ public class RoomScheduler {
 	
 		
 	}
+	/**
+	 * Determines which rooms are available for a particular time and promps the user to select one
+	 * @param roomList a list of rooms to be checked
+	 * @param startDateTime the start of the meeting
+	 * @param endDateTime the end of the meeting
+	 * @return the name of the room the user has selected as a String, or null if the user decided not to schedule
+	 */
+	protected static String findAvailableRoom(ArrayList<Room> roomList,Timestamp startDateTime,Timestamp endDateTime)
+	{
+		String roomName="";
+		Meeting request=new Meeting(startDateTime,endDateTime,"");
+		ArrayList<Room> acceptableRoomList = new ArrayList<Room>();
+		for (Room room : roomList) {
+			if (!room.collides(request))
+					acceptableRoomList.add(room);
+		}
+		if (acceptableRoomList.size()==0)	
+		{
+		System.out.println("Sorry no rooms were available for "+startDateTime+" - "+endDateTime);
+		logger.info("No rooms were available for "+startDateTime+" - "+endDateTime);
+		return null;
+		}
+		System.out.println("The following rooms are available for that time");
+		System.out.println("Please select which room you would like to schedule");
+		for(int i=0;i<acceptableRoomList.size();i++)
+		{
+			System.out.println((i+1)+" - "+acceptableRoomList.get(i));
+		}
+		
+		
+		System.out.println((acceptableRoomList.size()+1)+" - quit");
+		int selection=acceptableRoomList.size()+1;
+		try{
+		selection = keyboard.nextInt()-1;	// because selection is 1 based and acceptableRoomList is 0 based
+		}
+		catch (Exception e)
+		{logger.info("Invalid selection made within find available room "+selection+e);}
+		if(selection>-1 && selection <acceptableRoomList.size())
+			roomName=acceptableRoomList.get(selection).getName();
+		else if(selection!=acceptableRoomList.size()) // if theyre equal the user correctly indicated no rooms
+			System.out.println(selection+" "+acceptableRoomList.size()+" invalid room selection made");
+	return roomName;	
+	}
 }
+	

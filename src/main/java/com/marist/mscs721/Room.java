@@ -1,5 +1,4 @@
 package main.java.com.marist.mscs721;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,8 @@ import java.util.List;
 public class Room {	
 	
 	private String name;
+	private String building;
+	private String location;
 	private int capacity;
 	private ArrayList<Meeting> meetings; 
 	
@@ -26,6 +27,24 @@ public class Room {
 		setName(newName);
 		setCapacity(newCapacity);
 		setMeetings(new ArrayList<Meeting>());
+		setBuilding("");
+		setLocation("");
+		
+	}
+	
+	/**
+	 * Creates Room object with specified name and capacity
+	 * @param newName the name to be assigned to this room
+	 * @param newCapacity the capacity assigned to this room
+	 * @param building the building assigned to this room
+	 * @param location the locatin assigned to this room
+	 */
+	public Room(String newName, int newCapacity, String building, String location) {
+		setName(newName);
+		setCapacity(newCapacity);
+		setMeetings(new ArrayList<Meeting>());
+		setBuilding(building);
+		setLocation(location);
 	}
 	
 	/**
@@ -62,7 +81,43 @@ public class Room {
 		this.name = name;
 	}
 
+	/**
+	 * Returns the building of this Room 
+	 * @return the building assigned to this Room as a String
+	 */
+	public String getBuilding() {
+		return building;
+	}
 
+
+	/**
+	 * Sets the building of this Room
+	 * @param  name the new name to be assigned to this room
+	 */
+	public void setBuilding(String building) {
+		this.building = building;
+	}
+
+	/**
+	 * Returns the location of this Room 
+	 * @return the location of this Room as a String
+	 */
+	public String getLocation() {
+		return location;
+	}
+
+
+	/**
+	 * Sets the location of this Room
+	 * @param  location the new name to be assigned to this room
+	 */
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	
+	
+	
 	/**
 	 * Returns the capacity of this Room 
 	 * @return the capacity of this Room
@@ -111,5 +166,14 @@ public class Room {
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Displays a room as it will be known to the end user
+	 */
+	@Override
+	public String toString()
+	{
+	return getName()+ " - " + getCapacity() + " - " + getBuilding() + " - " +getLocation();
 	}
 }

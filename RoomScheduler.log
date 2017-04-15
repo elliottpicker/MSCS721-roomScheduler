@@ -62,3 +62,12 @@ WARN	2017-03-25 14:53:57,709	43271	main.java.com.marist.mscs721.RoomScheduler	[m
 INFO	2017-03-25 14:57:54,093	0	main.java.com.marist.mscs721.RoomScheduler	[main]	a room created
 INFO	2017-03-25 14:59:51,026	116933	main.java.com.marist.mscs721.RoomScheduler	[main]	invalid start date or time enterred for room a 2017- s:00.0 java.lang.IllegalArgumentException: Timestamp format must be yyyy-mm-dd hh:mm:ss[.fffffffff]
 INFO	2017-03-25 15:00:22,084	147991	main.java.com.marist.mscs721.RoomScheduler	[main]	Sucessfully Scheduled Meeting for room: a
+INFO	2017-04-15 19:39:26,630	0	main.java.com.marist.mscs721.RoomScheduler	[main]	a room created
+INFO	2017-04-15 19:40:21,786	55156	main.java.com.marist.mscs721.RoomScheduler	[main]	Sucessfully Scheduled Meeting for room: a
+INFO	2017-04-15 19:40:26,057	59427	main.java.com.marist.mscs721.RoomScheduler	[main]	1 Room(s) listed
+INFO	2017-04-15 19:42:12,301	0	main.java.com.marist.mscs721.RoomScheduler	[main]	a room created
+INFO	2017-04-15 19:42:16,040	3739	main.java.com.marist.mscs721.RoomScheduler	[main]	1 Room(s) listed
+INFO	2017-04-15 19:43:29,565	0	main.java.com.marist.mscs721.RoomScheduler	[main]	aa room created
+INFO	2017-04-15 19:43:32,049	2484	main.java.com.marist.mscs721.RoomScheduler	[main]	1 Room(s) listed
+WARN	2017-04-15 19:43:57,487	27922	main.java.com.marist.mscs721.RoomScheduler	[main]	attempt to create reserved room name #query
+INFO	2017-04-15 19:44:28,023	58458	main.java.com.marist.mscs721.RoomScheduler	[main]	Sucessfully Scheduled Meeting for room: aa
