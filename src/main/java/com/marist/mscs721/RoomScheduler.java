@@ -30,6 +30,7 @@ public class RoomScheduler {
 	
 	protected static final Scanner keyboard = new Scanner(System.in);
 	protected static final String FILENAME="roomscheduler.json";
+	
 	//private static final Logger logger = Logger.getLogger( RoomScheduler.class.getName() );
 	static Logger logger = Logger.getLogger(RoomScheduler.class);
 
@@ -50,7 +51,6 @@ public class RoomScheduler {
 		
 		Boolean end = false;
 		ArrayList<Room> rooms = new ArrayList<>();
-
 		while (!end) {
 			switch (mainMenu()) {
 
@@ -219,7 +219,7 @@ public class RoomScheduler {
 		Room newRoom = new Room(name, capacity,building,location);
 		roomList.add(newRoom);
 		logger.info(newRoom.getName()+" room created");
-		return "Room '" + newRoom.getName() + "' added successfully!";
+		return "Room '" + newRoom.getName() + " added successfully!";
 	}
 
 	/**

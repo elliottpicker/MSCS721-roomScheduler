@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -89,7 +90,20 @@ public class JUnitRoom {
 		assertEquals(roomName,room.getName());
 		
 	}
+	
+	/**
+	 * This method ensures that the constructor not passed a building or location
+	 * does not leave the variables uninitialized
+	 */
+	@Test
+	public void testLocandBuildConstructor() {
+		String roomName="room2";
+		Room room = new Room(roomName,70);
+		assertTrue(room.getBuilding()!=null && room.getLocation()!=null);
+		
+	}
 
+	
 	/**
 	 * This method ensures that the setName method changes the room name
 	 */
@@ -135,7 +149,37 @@ public class JUnitRoom {
 		Room room = new Room(roomName,capacity);
 		assertEquals(capacity,room.getCapacity());
 	}
+	
+	/**
+	 * This method tests that the getCapacity method returns the capacity passed to the new constructor
+	 */
+	@Test
+	public void testLocandBuildConstructorCap() {
+		String roomName="room4";
+		int capacity=6;
+		String building = "Lowell Thomas";
+		String location = "East Campus";
+		Room room = new Room(roomName,capacity,building,location);
+		assertEquals(capacity,room.getCapacity());
+	}
 
+	/**
+	 * This method tests that the constructor including building and location
+	 * contains an initialized empty list of meetings
+	 */
+	@Test
+	public void testLocandBuildConstructorMeet() {
+		String roomName="room4";
+		int capacity=6;
+		String building = "Lowell Thomas";
+		String location = "East Campus";
+		Room room = new Room(roomName,capacity,building,location);
+		List<Meeting> emptyList = new ArrayList<Meeting>();
+		assertEquals(room.getMeetings(),emptyList);
+	}
+
+	
+	
 	/**
 	 * This method ensures that the setCapacity method changes the rooms capacity
 	 */

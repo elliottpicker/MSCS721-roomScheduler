@@ -51,9 +51,22 @@ public class JUnitMeeting {
 		Timestamp startTimestamp= Timestamp.valueOf("2017-04-06 04:00:00");
 		Timestamp newStartTimestamp= Timestamp.valueOf("2017-04-06 03:00:00");
 		Timestamp endTimestamp= Timestamp.valueOf("2017-04-06 05:00:00");
-		Meeting meeting = new Meeting(startTimestamp,endTimestamp,"meeting1");
+		Meeting meeting = new Meeting(startTimestamp,endTimestamp,"1");
 		meeting.setStartTime(newStartTimestamp);
 		assertEquals(newStartTimestamp,meeting.getStartTime());
+	}
+	
+	/**
+	 * This method ensures that when no subject is passed, a default 
+	 * value of "No Subject" is assigned
+	 */
+	@Test
+	public void testNoSubject() {
+		Timestamp startTimestamp= Timestamp.valueOf("2017-04-06 04:00:00");
+		Timestamp endTimestamp= Timestamp.valueOf("2017-04-06 05:00:00");
+		String blankSubject="";
+		Meeting meeting = new Meeting(startTimestamp,endTimestamp,blankSubject);
+		assertEquals(meeting.getSubject(),"No Subject");
 	}
 
 	/**
